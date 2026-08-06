@@ -4,6 +4,8 @@ import { createServer } from "http"
 import express from "express"
 // import routes from "./routes/index.js"
 
+import "./migrate.js"
+
 const app = express()
 
 const { PORT } = process.env

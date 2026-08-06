@@ -1,14 +1,15 @@
 import {
+	Users,
+	Team,
+	Tournament,
+	TeamMember,
 	Match,
 	MatchPlayer,
-	Team,
-	TeamMember,
-	Tournament,
 	TournamentTeam,
 } from "./models/index.js"
 
 (async () => {
-	const models = [Match, MatchPlayer, Team, TeamMember, Tournament, TournamentTeam]
+	const models = [Users, Team, Tournament, TeamMember, Match, MatchPlayer, TournamentTeam]
 	for (const model of models) {
 		console.log("model -> ", model.name)
 		await model.sync({ alter: true })
