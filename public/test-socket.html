@@ -5,10 +5,15 @@
 </head>
 <body>
   <h2>Socket test</h2>
+  <button onclick="socket.disconnect()">Disconnect</button>
+  <button onclick="socket.connect()">Connect</button>
+  <br><br>
+  <button onclick="socket.emit('queue:join')">Join Queue</button>
+  <button onclick="socket.emit('queue:leave')">Leave Queue</button>
   <div id="log"></div>
 
   <script>
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzg2MTIyNTgwLCJleHAiOjE3ODYyMDg5ODB9.41tU6hSc-e0sfJbWjfTv-GhK3XhTt2U24eChZG4GLrI" 
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzg2MTIyNTgwLCJleHAiOjE3ODYyMDg5ODB9.41tU6hSc-e0sfJbWjfTv-GhK3XhTt2U24eChZG4GLrI"
 
     const socket = io("http://localhost:3002", {
       auth: { token }
@@ -19,10 +24,19 @@
     }
 
     socket.on("connect", () => log("✅ Connected: " + socket.id))
+    socket.on("disconnect", () => log("⚪ Disconnected"))
     socket.on("connect_error", (err) => log("❌ Error: " + err.message))
-    socket.on("user:online", (data) => log(`🟢 ${data.username} online`))
-    socket.on("user:offline", (data) => log(`🔴 User ${data.userId} offline`))
-    socket.on("online:list", (list) => log("Online users: " + JSON.stringify(list)))
+
+    socket.on("queue:joined", (data) => log(`📥 Joined queue: ${data.position}/${data.total}`))
+    socket.on("queue:update", (data) => log(`📊 Queue: ${data.current}/${data.total}`))
+    socket.on("queue:left", () => log("📤 Left queue"))
+    socket.on("queue:error", (data) => log("⚠️ " + data.message))
+
+    socket.on("lobby:found", (data) => {
+      log(`🎮 LOBBY FOUND! Match #${data.matchId}`)
+      log("Team A: " + data.teamA.map(p => p.username).join(", "))
+      log("Team B: " + data.teamB.map(p => p.username).join(", "))
+    })
   </script>
 </body>
 </html>

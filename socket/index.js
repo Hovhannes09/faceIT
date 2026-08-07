@@ -1,6 +1,7 @@
 import { Server } from "socket.io"
 import jwt from "jsonwebtoken"
 import Users from "../models/Users.js"
+import { initQueueHandlers } from "./queueHandler.js"
 
 const { JWT_SECRET } = process.env
 
@@ -43,6 +44,8 @@ export function initSocket(server) {
 
 	io.on("connection", (socket) => {
 		console.log(`🟢 ${socket.username} connected (${socket.id})`)
+
+		initQueueHandlers(io, socket)
 
 		if (!onlineUsers.has(socket.userId)) {
 			onlineUsers.set(socket.userId, new Set())
