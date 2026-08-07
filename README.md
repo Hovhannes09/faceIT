@@ -1,1 +1,1 @@
-# mini-faceit
+# faceIT
