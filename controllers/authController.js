@@ -1,7 +1,7 @@
 import joi from 'joi'
 import jwt from 'jsonwebtoken'
 import md5 from 'md5'
-import { User } from '../models/index.js'
+import { Users } from '../models/index.js'
 
 const registerSchema = joi.object({
 	username: joi.string().min(3).max(30).required(),
@@ -22,12 +22,12 @@ export async function register(req, res) {
 			return res.status(400).json({ error: error.details[0].message })
 		}
 
-		const existingUser = await User.findOne({ where: { email: value.email } })
+		const existingUser = await Users.findOne({ where: { email: value.email } })
 		if (existingUser) {
 			return res.status(400).json({ error: 'Email already exists' })
 		}
 
-		const user = await User.create({
+		const user = await Users.create({
 			username: value.username,
 			email: value.email,
 			password: md5(value.password),
@@ -35,10 +35,13 @@ export async function register(req, res) {
 			role: 'user'
 		})
 
+		const { password, ...safeUser } = user.toJSON()
+
 		res
 			.status(201)
-			.json({ message: 'User registered successfully', user })
+			.json({ message: 'User registered successfully', user: safeUser })
 	} catch (err) {
+		console.error(err)
 		res.status(500).json({ error: 'Internal server error' })
 	}
 }
@@ -50,27 +53,27 @@ export async function login(req, res) {
 			return res.status(400).json({ error: error.details[0].message })
 		}
 
-		const user = await User.findOne({ where: { email: value.email } })
+		const user = await Users.findOne({ where: { email: value.email } })
 		if (!user)
 			return res.status(401).json({ message: 'Invalid email or password' })
 
-		if (!user || user.password !== md5(value.password)) {
+		if (user.password !== md5(value.password)) {
 			return res.status(401).json({ error: 'Invalid email or password' })
 		}
 
 		const token = jwt.sign(
-			{ id: user.id, email: user.email, role: user.role },
+			{ userId: user.id, email: user.email, role: user.role },
 			process.env.JWT_SECRET,
 			{ expiresIn: '24h' }
 		)
 
-		res.json({
-			message: 'Logged in',
+		res.status(200).json({
+			message: 'Login successful',
+			token,
 			user: { id: user.id, email: user.email, role: user.role }
 		})
-
-		res.status(200).json({ message: 'Login successful', token })
 	} catch (err) {
+		console.error(err)
 		res.status(500).json({ message: 'Server error', error: err.message })
 	}
 }
@@ -88,13 +91,14 @@ export async function changePassword(req, res) {
 				.status(400)
 				.json({ message: 'New password must be at least 6 characters' })
 
-		const user = await User.findByPk(req.user.id)
+		const user = await Users.findByPk(req.user.id)
 		if (user.password !== md5(oldPassword))
 			return res.status(401).json({ message: 'Old password is incorrect' })
 
 		await user.update({ password: md5(newPassword) })
 		res.json({ message: 'Password changed successfully' })
 	} catch (err) {
+		console.error(err)
 		res.status(500).json({ message: 'Server error', error: err.message })
 	}
 }
