@@ -5,6 +5,7 @@ import morgan from "morgan"
 // import routes from "./routes/index.js"
 import authRoutes from "./routes/authRoutes.js"
 import profileRoutes from "./routes/profileRoutes.js"
+import { initSocket } from "./socket/index.js"
 
 
 import "./migrate.js"
@@ -21,6 +22,7 @@ app.use("/api/auth", authRoutes)
 
 const server = createServer(app)
 
+initSocket(server)
 
 server.listen(PORT, () => {
 	console.log(`Listening on ${PORT}`)

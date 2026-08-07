@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body>
+  <h2>Socket test</h2>
+  <div id="log"></div>
+
+  <script>
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzg2MTIyNTgwLCJleHAiOjE3ODYyMDg5ODB9.41tU6hSc-e0sfJbWjfTv-GhK3XhTt2U24eChZG4GLrI" 
+
+    const socket = io("http://localhost:3002", {
+      auth: { token }
+    })
+
+    const log = (msg) => {
+      document.getElementById("log").innerHTML += `<p>${msg}</p>`
+    }
+
+    socket.on("connect", () => log("✅ Connected: " + socket.id))
+    socket.on("connect_error", (err) => log("❌ Error: " + err.message))
+    socket.on("user:online", (data) => log(`🟢 ${data.username} online`))
+    socket.on("user:offline", (data) => log(`🔴 User ${data.userId} offline`))
+    socket.on("online:list", (list) => log("Online users: " + JSON.stringify(list)))
+  </script>
+</body>
+</html>
