@@ -1,6 +1,6 @@
 import { Match, MatchPlayer } from '../models/index.js'
 
-const QUEUE_SIZE = 2
+const QUEUE_SIZE = 10
 const TEAM_SIZE = QUEUE_SIZE / 2
 
 let queue = []
