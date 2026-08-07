@@ -6,10 +6,10 @@ import morgan from "morgan"
 import authRoutes from "./routes/authRoutes.js"
 import profileRoutes from "./routes/profileRoutes.js"
 
+
 import "./migrate.js"
 
 const app = express()
-
 const { PORT } = process.env
 
 app.use(morgan("dev"))
@@ -20,6 +20,7 @@ app.use("/api/profile", profileRoutes)
 app.use("/api/auth", authRoutes)
 
 const server = createServer(app)
+
 
 server.listen(PORT, () => {
 	console.log(`Listening on ${PORT}`)
