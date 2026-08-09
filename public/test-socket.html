@@ -10,33 +10,64 @@
   <br><br>
   <button onclick="socket.emit('queue:join')">Join Queue</button>
   <button onclick="socket.emit('queue:leave')">Leave Queue</button>
+  <br><br>
+  <button onclick="setReady()">Ready</button>
+  <br><br>
+  <select id="mapSelect"></select>
+  <button onclick="banMap()">Ban selected map</button>
   <div id="log"></div>
 
   <script>
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzg2MTIyNTgwLCJleHAiOjE3ODYyMDg5ODB9.41tU6hSc-e0sfJbWjfTv-GhK3XhTt2U24eChZG4GLrI"
+    const token = "ВСТАВЬТЕ_СЮДА_ВАШ_JWT_ТОКЕН"
+    let currentMatchId = null
 
-    const socket = io("http://localhost:3002", {
-      auth: { token }
-    })
+    const socket = io("http://localhost:3002", { auth: { token } })
 
     const log = (msg) => {
       document.getElementById("log").innerHTML += `<p>${msg}</p>`
     }
 
     socket.on("connect", () => log("✅ Connected: " + socket.id))
-    socket.on("disconnect", () => log("⚪ Disconnected"))
     socket.on("connect_error", (err) => log("❌ Error: " + err.message))
 
-    socket.on("queue:joined", (data) => log(`📥 Joined queue: ${data.position}/${data.total}`))
+    socket.on("queue:joined", (data) => log(`📥 Queue: ${data.position}/${data.total}`))
     socket.on("queue:update", (data) => log(`📊 Queue: ${data.current}/${data.total}`))
-    socket.on("queue:left", () => log("📤 Left queue"))
-    socket.on("queue:error", (data) => log("⚠️ " + data.message))
 
     socket.on("lobby:found", (data) => {
+      currentMatchId = data.matchId
       log(`🎮 LOBBY FOUND! Match #${data.matchId}`)
       log("Team A: " + data.teamA.map(p => p.username).join(", "))
       log("Team B: " + data.teamB.map(p => p.username).join(", "))
     })
+
+    socket.on("lobby:ready_update", (data) => log(`✅ Ready: ${data.readyCount}/${data.total}`))
+    socket.on("lobby:all_ready", () => log("🚀 All ready! Starting veto..."))
+
+    socket.on("veto:start", (data) => {
+      log("🗺️ Veto started. Maps: " + data.mapPool.join(", "))
+      const select = document.getElementById("mapSelect")
+      select.innerHTML = data.mapPool.map(m => `<option value="${m}">${m}</option>`).join("")
+    })
+
+    socket.on("veto:turn", (data) => log(`👉 Turn: userId ${data.userId}`))
+    socket.on("veto:update", (data) => {
+      log("🚫 Banned: " + data.bannedMaps.join(", "))
+      const select = document.getElementById("mapSelect")
+      select.innerHTML = data.remainingMaps.map(m => `<option value="${m}">${m}</option>`).join("")
+    })
+    socket.on("veto:error", (data) => log("⚠️ " + data.message))
+    socket.on("veto:finished", (data) => log(`🏆 FINAL MAP: ${data.map}`))
+
+    function setReady() {
+      if (!currentMatchId) return log("⚠️ No active lobby")
+      socket.emit("lobby:ready", { matchId: currentMatchId })
+    }
+
+    function banMap() {
+      if (!currentMatchId) return log("⚠️ No active lobby")
+      const map = document.getElementById("mapSelect").value
+      socket.emit("veto:ban", { matchId: currentMatchId, map })
+    }
   </script>
 </body>
 </html>

@@ -51,6 +51,11 @@ async function startLobby(io, players) {
 	const roomName = `match_${match.id}`
 	players.forEach((s) => s.join(roomName))
 
+	const teamAData = teamA.map((s) => ({ userId: s.userId, username: s.username }))
+	const teamBData = teamB.map((s) => ({ userId: s.userId, username: s.username }))
+
+	createLobby(match.id, teamAData, teamBData)
+
 	io.to(roomName).emit('match:found', {
 		matchId: match.id,
 		teamA: teamA.map((s) => ({ userId: s.userId, username: s.username })),
