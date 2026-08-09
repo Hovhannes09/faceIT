@@ -1,6 +1,7 @@
 import { Match, MatchPlayer } from '../models/index.js'
+import { createLobby } from "./lobbyHandler.js"
 
-const QUEUE_SIZE = 10
+const QUEUE_SIZE = 2
 const TEAM_SIZE = QUEUE_SIZE / 2
 
 let queue = []
@@ -48,7 +49,7 @@ async function startLobby(io, players) {
 	]
 	await MatchPlayer.bulkCreate(matchPlayers)
 
-	const roomName = `match_${match.id}`
+	const roomName = `match:${match.id}`
 	players.forEach((s) => s.join(roomName))
 
 	const teamAData = teamA.map((s) => ({ userId: s.userId, username: s.username }))
@@ -56,7 +57,7 @@ async function startLobby(io, players) {
 
 	createLobby(match.id, teamAData, teamBData)
 
-	io.to(roomName).emit('match:found', {
+	io.to(roomName).emit('lobby:found', {
 		matchId: match.id,
 		teamA: teamA.map((s) => ({ userId: s.userId, username: s.username })),
 		teamB: teamB.map((s) => ({ userId: s.userId, username: s.username }))

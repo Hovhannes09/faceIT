@@ -6,6 +6,7 @@ import morgan from "morgan"
 import authRoutes from "./routes/authRoutes.js"
 import profileRoutes from "./routes/profileRoutes.js"
 import { initSocket } from "./socket/index.js"
+import matchRoutes from "./routes/matchRoutes.js"
 
 
 import "./migrate.js"
@@ -19,6 +20,7 @@ app.use("/uploads", express.static("uploads"))
 
 app.use("/api/profile", profileRoutes)
 app.use("/api/auth", authRoutes)
+app.use("/api/matches", matchRoutes)
 
 const server = createServer(app)
 

@@ -15,6 +15,7 @@ export function createLobby(matchId, teamA, teamB) {
 		vetoIndex: 0,
 		vetoStarted: false,
 	})
+	console.log(`📦 Lobby created for match ${matchId}. Players:`, [...teamA, ...teamB].map(p => p.userId))
 }
 
 function buildVetoOrder(teamA, teamB) {
@@ -25,8 +26,13 @@ function buildVetoOrder(teamA, teamB) {
 
 export function initLobbyHandlers(io, socket) {
 	socket.on("lobby:ready", ({ matchId }) => {
+		console.log(`🎯 ${socket.username} (userId ${socket.userId}) pressed ready for match ${matchId}`)
+
 		const lobby = lobbies.get(matchId)
-		if (!lobby) return socket.emit("lobby:error", { message: "Lobby not found" })
+		if (!lobby) {
+			console.log(`❌ Lobby ${matchId} not found in memory. Available lobbies:`, Array.from(lobbies.keys()))
+			return socket.emit("lobby:error", { message: "Lobby not found" })
+		}
 
 		lobby.ready.add(socket.userId)
 
