@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <%- include('partials/head', { title: 'Матчмейкинг' }) %>
+</head>
+<body>
+
+  <%- include('partials/sidebar', { activePage: 'dashboard', currentUser }) %>
+
+  <div class="main">
+    <%- include('partials/topbar', { currentUser }) %>
+
+    <div class="content">
+      <div class="content-main">
+
+        <section class="faceit-card queue-hero">
+          <div class="radar idle" id="radar">
+            <div class="radar-ring"></div>
+            <div class="radar-ring r2"></div>
+            <div class="radar-ring r3"></div>
+            <div class="radar-sweep" id="sweep"></div>
+            <div class="radar-center">
+              <div class="count"><span id="slotCount">0</span><span class="of">/10</span></div>
+              <div class="status-label" id="radarLabel">Не в поиске</div>
+            </div>
+            <div id="slots"></div>
+          </div>
+
+          <div class="queue-info">
+            <div class="queue-eyebrow">5v5 · Соревновательный</div>
+            <h1 class="queue-title">Найти матч</h1>
+            <p class="queue-desc">Система подберёт 10 игроков близкого рейтинга. Как только лобби соберётся — начнётся выбор карты.</p>
+            <div class="queue-meta">
+              <div>
+                <span class="val mono" id="timerVal">00:00</span>
+                <span class="lbl">Время ожидания</span>
+              </div>
+              <div>
+                <span class="val mono">~2:40</span>
+                <span class="lbl">Среднее время</span>
+              </div>
+              <div>
+                <span class="val mono"><%= currentUser.elo %></span>
+                <span class="lbl">Ваш ELO</span>
+              </div>
+            </div>
+            <button class="btn-primary" id="queueBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Найти игру
+            </button>
+          </div>
+        </section>
+
+        <section class="faceit-card">
+          <div class="section-head">
+            <h2>EU Рейтинги</h2>
+            <span class="sub">Сезон 1 · Обновляется live</span>
+          </div>
+          <div class="lb-head">
+            <span>Ранг</span>
+            <span>Игрок</span>
+            <span>Уровень</span>
+            <span style="text-align:right">ELO</span>
+          </div>
+
+          <% leaderboard.forEach((player, index) => { %>
+            <div class="lb-row <%= index === 0 ? 'top1' : '' %>">
+              <span class="lb-rank">#<%= index + 1 %></span>
+              <span class="lb-player">
+                <span class="avatar-frame-neon">
+                  <% if (player.avatarUrl) { %>
+                    <img src="<%= player.avatarUrl %>" alt="">
+                  <% } else { %>
+                    <span class="avatar-fallback"><%= player.username.slice(0, 2).toUpperCase() %></span>
+                  <% } %>
+                </span>
+                <%= player.username %>
+                <span class="lb-status <%= onlineUserIds.includes(player.id) ? '' : 'offline' %>"></span>
+              </span>
+              <span class="lb-level">LVL <%= Math.min(10, Math.floor(player.elo / 400) + 1) %></span>
+              <span class="lb-elo"><%= player.elo %></span>
+            </div>
+          <% }) %>
+        </section>
+
+      </div>
+
+      <aside class="side-panel">
+        <div class="faceit-card party-card">
+          <div class="party-head">
+            <h3>PARTY</h3>
+            <span class="party-vs">1/5</span>
+          </div>
+          <div class="friend-row">
+            <span class="avatar-frame-neon"><span class="avatar-fallback"><%= currentUser.username.slice(0, 2).toUpperCase() %></span></span>
+            <div>
+              <div class="friend-name"><%= currentUser.username %> (Вы)</div>
+              <div class="friend-status online">В сети</div>
+            </div>
+          </div>
+          <button class="btn-ghost" style="width:100%; margin-top:10px;">+ Пригласить друга</button>
+        </div>
+
+        <div class="faceit-card vip-card">
+          <h3>CLUTCH Premium</h3>
+          <p>Расширенная статистика, приоритет в очереди и эксклюзивные рамки профиля.</p>
+          <button class="btn-premium">Получить Premium</button>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+	<script>window.APP_TOKEN = "<%= token %>"</script>
+	<script src="/js/dashboard.js"></script>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

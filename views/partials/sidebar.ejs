@@ -1,0 +1,41 @@
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark"></div>
+    CLUTCH
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Играть</div>
+    <a class="sidebar-item <%= activePage === 'dashboard' ? 'active' : '' %>" href="/dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v18M16 3v18M3 8h18M3 16h18"/></svg>
+      Матчмейкинг
+    </a>
+    <a class="sidebar-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      Party Finder
+    </a>
+    <a class="sidebar-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21l7-9 4 4 7-9"/></svg>
+      Ранг
+    </a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Сообщество</div>
+    <a class="sidebar-item <%= activePage === 'teams' ? 'active' : '' %>" href="/teams">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Команды
+    </a>
+    <a class="sidebar-item <%= activePage === 'tournaments' ? 'active' : '' %>" href="/tournaments">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/><path d="M6 15l6-6 6 6"/></svg>
+      Турниры
+    </a>
+  </div>
+
+  <div class="sidebar-spacer"></div>
+
+  <div class="rank-teaser">
+    <div class="elo-num mono"><%= currentUser.elo %></div>
+    <div class="elo-label">Текущий ELO</div>
+  </div>
+</aside>
