@@ -1,10 +1,14 @@
 <header class="topbar">
   <nav class="tabs">
-    <a class="tab active" href="/dashboard">МАТЧМЕЙКИНГ</a>
-    <a class="tab" href="/tournaments">ТУРНИРЫ</a>
-    <a class="tab" href="/teams">КОМАНДЫ</a>
+    <a class="tab active" href="/dashboard"><%= t('tab_matchmaking') %></a>
+    <a class="tab" href="/tournaments"><%= t('tab_tournaments') %></a>
+    <a class="tab" href="/teams"><%= t('tab_teams') %></a>
   </nav>
   <div class="topbar-right">
+    <div class="lang-switch">
+      <a href="/lang/ru" class="lang-btn <%= currentLang === 'ru' ? 'active' : '' %>">RU</a>
+      <a href="/lang/en" class="lang-btn <%= currentLang === 'en' ? 'active' : '' %>">EN</a>
+    </div>
     <button class="icon-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       <span class="notif-dot"></span>

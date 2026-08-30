@@ -494,3 +494,23 @@
     .queue-hero { grid-template-columns: 1fr; text-align: center; }
     .queue-meta { justify-content: center; }
   }
+
+  .lang-switch {
+  display: flex;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.lang-btn {
+  padding: 8px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+.lang-btn.active {
+  background: rgba(99,102,241,0.2);
+  color: #c7d2fe;
+}
+.lang-btn:hover { color: var(--text); }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="<%= currentLang %>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Вход — CLUTCH</title>
+  <title><%= t('login_title') %> — faceIT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
@@ -71,6 +71,25 @@
       color: var(--text-dim);
     }
     .auth-footer a { color: var(--accent-2); font-weight: 600; }
+    .lang-switch {
+      display: flex;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .lang-btn {
+      padding: 8px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-faint);
+    }
+    .lang-btn.active {
+      background: rgba(99,102,241,0.2);
+      color: #c7d2fe;
+    }
+    .lang-btn:hover { color: var(--text); }
   </style>
 </head>
 <body>
@@ -78,27 +97,35 @@
     <div class="faceit-card auth-card">
       <div class="auth-logo">
         <div class="logo-mark"></div>
-        CLUTCH
+        faceIT
       </div>
-      <h1 class="auth-title">Вход в аккаунт</h1>
-      <p class="auth-sub">Возвращайтесь в игру</p>
+
+      <div style="display:flex; justify-content:center; margin-bottom: 20px;">
+        <div class="lang-switch">
+          <a href="/lang/ru" class="lang-btn <%= currentLang === 'ru' ? 'active' : '' %>">RU</a>
+          <a href="/lang/en" class="lang-btn <%= currentLang === 'en' ? 'active' : '' %>">EN</a>
+        </div>
+      </div>
+
+      <h1 class="auth-title"><%= t('login_title') %></h1>
+      <p class="auth-sub"><%= t('login_sub') %></p>
 
       <div class="auth-error" id="errorBox"></div>
 
       <form id="loginForm">
         <div class="form-group">
-          <label>Email</label>
+          <label><%= t('label_email') %></label>
           <input type="email" id="email" required autocomplete="email">
         </div>
         <div class="form-group">
-          <label>Пароль</label>
+          <label><%= t('label_password') %></label>
           <input type="password" id="password" required autocomplete="current-password">
         </div>
-        <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Войти</button>
+        <button type="submit" class="btn-primary" style="width:100%; justify-content:center;"><%= t('btn_login') %></button>
       </form>
 
       <div class="auth-footer">
-        Нет аккаунта? <a href="/register">Зарегистрироваться</a>
+        <%= t('no_account') %> <a href="/register"><%= t('register_link') %></a>
       </div>
     </div>
   </div>

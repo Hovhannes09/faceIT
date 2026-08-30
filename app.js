@@ -9,6 +9,7 @@ import profileRoutes from "./routes/profileRoutes.js"
 import { initSocket } from "./socket/index.js"
 import matchRoutes from "./routes/matchRoutes.js"
 import viewRoutes from "./routes/viewRoutes.js"
+import localeMiddleware from "./middlewares/localMiddleware.js"
 
 
 import "./migrate.js"
@@ -23,6 +24,7 @@ app.use(morgan("dev"))
 app.use(express.json())
 app.use("/uploads", express.static("uploads"))
 app.use(cookieParser())
+app.use(localeMiddleware)
 app.use(express.static("public"))
 
 app.use("/api/profile", profileRoutes)

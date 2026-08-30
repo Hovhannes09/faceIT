@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="<%= currentLang %>">
 <head>
-  <%- include('partials/head', { title: 'Матчмейкинг' }) %>
+  <%- include('partials/head', { title: t('tab_matchmaking') }) %>
 </head>
 <body>
 
@@ -21,46 +21,46 @@
             <div class="radar-sweep" id="sweep"></div>
             <div class="radar-center">
               <div class="count"><span id="slotCount">0</span><span class="of">/10</span></div>
-              <div class="status-label" id="radarLabel">Не в поиске</div>
+              <div class="status-label" id="radarLabel"><%= t('idle_label') %></div>
             </div>
             <div id="slots"></div>
           </div>
 
           <div class="queue-info">
-            <div class="queue-eyebrow">5v5 · Соревновательный</div>
-            <h1 class="queue-title">Найти матч</h1>
-            <p class="queue-desc">Система подберёт 10 игроков близкого рейтинга. Как только лобби соберётся — начнётся выбор карты.</p>
+            <div class="queue-eyebrow"><%= t('queue_type') %></div>
+            <h1 class="queue-title"><%= t('find_match_title') %></h1>
+            <p class="queue-desc"><%= t('find_match_desc') %></p>
             <div class="queue-meta">
               <div>
                 <span class="val mono" id="timerVal">00:00</span>
-                <span class="lbl">Время ожидания</span>
+                <span class="lbl"><%= t('wait_time') %></span>
               </div>
               <div>
                 <span class="val mono">~2:40</span>
-                <span class="lbl">Среднее время</span>
+                <span class="lbl"><%= t('avg_time') %></span>
               </div>
               <div>
                 <span class="val mono"><%= currentUser.elo %></span>
-                <span class="lbl">Ваш ELO</span>
+                <span class="lbl"><%= t('your_elo') %></span>
               </div>
             </div>
             <button class="btn-primary" id="queueBtn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              Найти игру
+              <%= t('btn_find_game') %>
             </button>
           </div>
         </section>
 
         <section class="faceit-card">
           <div class="section-head">
-            <h2>EU Рейтинги</h2>
-            <span class="sub">Сезон 1 · Обновляется live</span>
+            <h2><%= t('leaderboard_title') %></h2>
+            <span class="sub"><%= t('leaderboard_sub') %></span>
           </div>
           <div class="lb-head">
-            <span>Ранг</span>
-            <span>Игрок</span>
-            <span>Уровень</span>
-            <span style="text-align:right">ELO</span>
+            <span><%= t('col_rank') %></span>
+            <span><%= t('col_player') %></span>
+            <span><%= t('col_level') %></span>
+            <span style="text-align:right"><%= t('col_elo') %></span>
           </div>
 
           <% leaderboard.forEach((player, index) => { %>
@@ -88,23 +88,23 @@
       <aside class="side-panel">
         <div class="faceit-card party-card">
           <div class="party-head">
-            <h3>PARTY</h3>
+            <h3><%= t('party_title') %></h3>
             <span class="party-vs">1/5</span>
           </div>
           <div class="friend-row">
             <span class="avatar-frame-neon"><span class="avatar-fallback"><%= currentUser.username.slice(0, 2).toUpperCase() %></span></span>
             <div>
-              <div class="friend-name"><%= currentUser.username %> (Вы)</div>
-              <div class="friend-status online">В сети</div>
+              <div class="friend-name"><%= currentUser.username %> <%= t('you_suffix') %></div>
+              <div class="friend-status online"><%= t('status_online') %></div>
             </div>
           </div>
-          <button class="btn-ghost" style="width:100%; margin-top:10px;">+ Пригласить друга</button>
+          <button class="btn-ghost" style="width:100%; margin-top:10px;"><%= t('invite_friend') %></button>
         </div>
 
         <div class="faceit-card vip-card">
-          <h3>CLUTCH Premium</h3>
-          <p>Расширенная статистика, приоритет в очереди и эксклюзивные рамки профиля.</p>
-          <button class="btn-premium">Получить Premium</button>
+          <h3><%= t('premium_title') %></h3>
+          <p><%= t('premium_desc') %></p>
+          <button class="btn-premium"><%= t('btn_get_premium') %></button>
         </div>
       </aside>
 
@@ -112,9 +112,7 @@
   </div>
 
 	<script>window.APP_TOKEN = "<%= token %>"</script>
+	<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 	<script src="/js/dashboard.js"></script>
-
-  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-  <script src="/js/dashboard.js"></script>
 </body>
 </html>
