@@ -15,7 +15,7 @@ export function createLobby(matchId, teamA, teamB) {
 		vetoIndex: 0,
 		vetoStarted: false,
 	})
-	console.log(`📦 Lobby created for match ${matchId}. Players:`, [...teamA, ...teamB].map(p => p.userId))
+	console.log(`📦 Lobby created for match ${matchId}`)
 }
 
 function buildVetoOrder(teamA, teamB) {
@@ -24,21 +24,53 @@ function buildVetoOrder(teamA, teamB) {
 	return [captainA, captainB, captainA, captainB, captainA, captainB]
 }
 
-export function initLobbyHandlers(io, socket) {
-	socket.on("lobby:ready", ({ matchId }) => {
-		console.log(`🎯 ${socket.username} (userId ${socket.userId}) pressed ready for match ${matchId}`)
+function buildSnapshot(lobby, matchId) {
+	return {
+		matchId,
+		teamA: lobby.teamA,
+		teamB: lobby.teamB,
+		readyUserIds: Array.from(lobby.ready),
+		vetoStarted: lobby.vetoStarted,
+		mapPool: lobby.mapPool,
+		bannedMaps: lobby.bannedMaps,
+		currentTurnUserId: lobby.vetoStarted ? lobby.vetoOrder[lobby.vetoIndex] : null,
+	}
+}
 
+export function initLobbyHandlers(io, socket) {
+	socket.on("lobby:enter", async ({ matchId }) => {
 		const lobby = lobbies.get(matchId)
-		if (!lobby) {
-			console.log(`❌ Lobby ${matchId} not found in memory. Available lobbies:`, Array.from(lobbies.keys()))
-			return socket.emit("lobby:error", { message: "Lobby not found" })
+
+		if (lobby) {
+			socket.join(`match:${matchId}`)
+			socket.emit("lobby:state", buildSnapshot(lobby, matchId))
+			return
 		}
+
+		const match = await Match.findByPk(matchId)
+		if (!match) {
+			return socket.emit("lobby:error", { message: "Match not found" })
+		}
+
+		socket.join(`match:${matchId}`)
+		socket.emit("lobby:finished_state", {
+			matchId,
+			status: match.status,
+			mapPlayed: match.mapPlayed,
+			scoreTeamA: match.scoreTeamA,
+			scoreTeamB: match.scoreTeamB,
+		})
+	})
+
+	socket.on("lobby:ready", ({ matchId }) => {
+		const lobby = lobbies.get(matchId)
+		if (!lobby) return socket.emit("lobby:error", { message: "Lobby not found" })
 
 		lobby.ready.add(socket.userId)
 
 		const room = `match:${matchId}`
 		io.to(room).emit("lobby:ready_update", {
-			readyCount: lobby.ready.size,
+			readyUserIds: Array.from(lobby.ready),
 			total: lobby.teamA.length + lobby.teamB.length,
 		})
 

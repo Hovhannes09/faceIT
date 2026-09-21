@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="<%= currentLang %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= t('register_title') %> — faceIT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 40px 20px;
+    }
+    .auth-card {
+      width: 380px;
+      padding: 36px;
+    }
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+    .auth-title { font-size: 20px; margin-bottom: 6px; text-align: center; }
+    .auth-sub { color: var(--text-dim); font-size: 13px; text-align: center; margin-bottom: 24px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .form-group input {
+      width: 100%;
+      background: #0e111f;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px 14px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    }
+    .auth-error {
+      background: rgba(244,63,94,0.1);
+      border: 1px solid rgba(244,63,94,0.3);
+      color: #fca5a5;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .auth-success {
+      background: rgba(52,211,153,0.1);
+      border: 1px solid rgba(52,211,153,0.3);
+      color: #6ee7b7;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+    .auth-footer a { color: var(--accent-2); font-weight: 600; }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="faceit-card auth-card">
+      <div class="auth-logo">
+        <div class="logo-mark"></div>
+        faceIT
+      </div>
+
+      <div style="display:flex; justify-content:center; margin-bottom: 20px;">
+        <div class="lang-switch">
+          <a href="/lang/ru" class="lang-btn <%= currentLang === 'ru' ? 'active' : '' %>">RU</a>
+          <a href="/lang/en" class="lang-btn <%= currentLang === 'en' ? 'active' : '' %>">EN</a>
+        </div>
+      </div>
+
+      <h1 class="auth-title"><%= t('register_title') %></h1>
+      <p class="auth-sub"><%= t('register_sub') %></p>
+
+      <div class="auth-error" id="errorBox"></div>
+      <div class="auth-success" id="successBox"></div>
+
+      <form id="registerForm">
+        <div class="form-group">
+          <label><%= t('label_username') %></label>
+          <input type="text" id="username" required minlength="3" maxlength="30" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label><%= t('label_fullname') %></label>
+          <input type="text" id="fullName" required minlength="3" maxlength="50" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label><%= t('label_email') %></label>
+          <input type="email" id="email" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label><%= t('label_password') %></label>
+          <input type="password" id="password" required minlength="6" autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn-primary" id="submitBtn" style="width:100%; justify-content:center;"><%= t('btn_register') %></button>
+      </form>
+
+      <div class="auth-footer">
+        <%= t('have_account') %> <a href="/login"><%= t('login_link') %></a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.I18N = {
+      success: "<%= t('register_success') %>"
+    }
+  </script>
+  <script src="/js/register.js"></script>
+</body>
+</html>

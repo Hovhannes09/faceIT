@@ -1,7 +1,6 @@
 import { Router } from "express"
-import { renderDashboard } from "../controllers/viewController.js"
 import pageAuth from "../middlewares/pageAuth.js"
-import { renderLogin } from "../controllers/viewController.js"
+import { renderLogin, renderRegister, renderDashboard } from "../controllers/viewController.js"
 
 const router = Router()
 
@@ -22,5 +21,6 @@ router.get("/lang/:code", (req, res) => {
 
 router.get("/dashboard", pageAuth, renderDashboard)
 router.get("/login", renderLogin)
+router.get("/register", renderRegister)
 
 export default router

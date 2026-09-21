@@ -28,3 +28,7 @@ export const renderDashboard = async (req, res) => {
 export const renderLogin = (req, res) => {
 	res.render("login")
 }
+
+export const renderRegister = (req, res) => {
+	res.render("register")
+}
