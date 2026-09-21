@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="<%= currentLang %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= t('lobby_title') %> — CLUTCH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .lobby-page { width: 100%; min-height: 100vh; padding: 32px; display: flex; flex-direction: column; gap: 24px; }
+    .lobby-topbar { display: flex; justify-content: space-between; align-items: center; }
+    .lobby-status { font-family: 'Rajdhani', sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); padding: 8px 16px; border: 1px solid var(--border); border-radius: 999px; }
+    .lobby-status.active { color: #c7d2fe; border-color: var(--accent); box-shadow: 0 0 12px rgba(99,102,241,0.3); }
+
+    .teams-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .team-panel { padding: 20px; }
+    .team-panel h3 { font-size: 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .team-panel.a h3 { color: #a5b4fc; }
+    .team-panel.b h3 { color: #f9a8d4; }
+
+    .player-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .player-row:last-child { border-bottom: none; }
+    .player-name { font-weight: 600; font-size: 14px; flex: 1; }
+    .ready-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; transition: all 0.2s ease; }
+    .ready-check.ready { background: var(--success); border-color: var(--success); color: #06281c; }
+
+    .ready-section { text-align: center; padding: 20px; }
+    .btn-primary:disabled { opacity: 0.7; cursor: default; transform: none; box-shadow: none; }
+
+    .veto-section { padding: 24px; }
+    .veto-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .veto-turn-label { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; }
+    .veto-turn-label.mine { color: #6ee7b7; }
+    .veto-turn-label.theirs { color: var(--text-faint); }
+
+    .map-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+    .map-tile { position: relative; aspect-ratio: 4/3; border-radius: 10px; background: linear-gradient(135deg, #1c2140, #141728); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s ease; }
+    .map-tile:hover:not(.banned):not(.disabled) { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: 0 0 14px rgba(99,102,241,0.3); }
+    .map-tile.disabled { cursor: not-allowed; opacity: 0.5; }
+    .map-tile.banned { opacity: 0.35; cursor: default; }
+    .map-tile.banned::after { content: '✕'; position: absolute; font-size: 30px; color: var(--danger); }
+    .map-tile.final { border-color: var(--success); box-shadow: 0 0 20px rgba(52,211,153,0.4); grid-column: 1 / -1; aspect-ratio: auto; padding: 30px; font-size: 22px; }
+
+    .finished-panel { padding: 40px; text-align: center; }
+    .finished-panel h2 { font-size: 26px; margin-bottom: 8px; }
+    .finished-panel p { color: var(--text-dim); margin-bottom: 20px; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="lobby-page">
+    <div class="lobby-topbar">
+      <div class="logo">
+        <div class="logo-mark"></div>
+        CLUTCH
+      </div>
+      <div class="lobby-status" id="lobbyStatus"><%= t('waiting_ready') %></div>
+    </div>
+
+    <!-- READY-CHECK + VETO VIEW -->
+    <div id="activeView">
+      <div class="teams-grid">
+        <div class="faceit-card team-panel a">
+          <h3><%= t('team_a') %></h3>
+          <div id="teamAList"></div>
+        </div>
+        <div class="faceit-card team-panel b">
+          <h3><%= t('team_b') %></h3>
+          <div id="teamBList"></div>
+        </div>
+      </div>
+
+      <div class="faceit-card ready-section" id="readySection">
+        <button class="btn-primary" id="readyBtn" style="margin: 0 auto;"><%= t('btn_ready') %></button>
+      </div>
+
+      <div class="faceit-card veto-section hidden" id="vetoSection">
+        <div class="veto-header">
+          <h3><%= t('veto_phase') %></h3>
+          <span class="veto-turn-label" id="turnLabel"></span>
+        </div>
+        <div class="map-grid" id="mapGrid"></div>
+      </div>
+    </div>
+
+    <!-- FINISHED VIEW -->
+    <div class="faceit-card finished-panel hidden" id="finishedView">
+      <h2 id="finishedTitle"><%= t('match_ready_title') %></h2>
+      <p id="finishedDesc"><%= t('match_ready_desc') %></p>
+      <div class="map-tile final" id="finalMapTile" style="max-width: 300px; margin: 0 auto 20px;"></div>
+      <br>
+      <a href="/dashboard" class="btn-ghost"><%= t('back_to_dashboard') %></a>
+    </div>
+  </div>
+
+  <script>
+    window.APP_TOKEN = "<%= token %>"
+    window.CURRENT_USER_ID = <%= currentUser.id %>
+    window.MATCH_ID = <%= matchId %>
+    window.I18N = {
+      waitingReady: "<%= t('waiting_ready') %>",
+      vetoPhase: "<%= t('veto_phase') %>",
+      yourTurn: "<%= t('your_turn') %>",
+      opponentTurn: "<%= t('opponent_turn') %>",
+      readyBtn: "<%= t('btn_ready') %>",
+      readyDone: "<%= t('btn_ready_done') %>",
+      matchReadyTitle: "<%= t('match_ready_title') %>",
+      matchReadyDesc: "<%= t('match_ready_desc') %>",
+    }
+  </script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="/js/lobby.js"></script>
+</body>
+</html>

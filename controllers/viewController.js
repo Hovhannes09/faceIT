@@ -32,3 +32,11 @@ export const renderLogin = (req, res) => {
 export const renderRegister = (req, res) => {
 	res.render("register")
 }
+
+export const renderLobby = (req, res) => {
+	res.render("lobby", {
+		currentUser: req.currentUser,
+		matchId: req.params.matchId,
+		token: req.cookies.token,
+	})
+}
