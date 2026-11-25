@@ -7,7 +7,11 @@ const DEFAULT_LANG = "ru"
 const translations = {}
 for (const lang of SUPPORTED_LANGS) {
 	const filePath = path.join(process.cwd(), "locales", `${lang}.json`)
-	translations[lang] = JSON.parse(fs.readFileSync(filePath, "utf-8"))
+	try {
+		translations[lang] = JSON.parse(fs.readFileSync(filePath, "utf-8"))
+	} catch (err) {
+		throw new Error(`Failed to parse locale file at ${filePath}: ${err.message}`)
+	}
 }
 
 export default (req, res, next) => {

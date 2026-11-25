@@ -12,7 +12,7 @@ form.addEventListener('submit', async (e) => {
 		const res = await fetch('/api/auth/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			credentials: 'include', // важно — иначе браузер не сохранит cookie
+			credentials: 'include',
 			body: JSON.stringify({ email, password }),
 		})
 

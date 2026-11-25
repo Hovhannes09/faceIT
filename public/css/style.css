@@ -514,3 +514,485 @@
   color: #c7d2fe;
 }
 .lang-btn:hover { color: var(--text); }
+
+/* ===== LOBBY ===== */
+/* Стили страницы лобби. Подключается отдельным файлом — style.css трогать не нужно. */
+
+.lobby-body { display: block; }
+
+.lobby-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 32px 48px;
+}
+
+.lobby-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.lobby-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.lobby-error {
+  display: none;
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: #fca5a5;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.lobby-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ============ TEAMS ============ */
+.team-panel { overflow: hidden; }
+
+.team-panel-head {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 14px 20px;
+}
+.team-a-head { color: #a5b4fc; box-shadow: inset 0 -2px 0 var(--accent); }
+.team-b-head { color: #f9a8d4; box-shadow: inset 0 -2px 0 var(--accent-2); }
+
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+.player-row:last-child { border-bottom: none; }
+.player-row .avatar-frame-neon { width: 36px; height: 36px; flex-shrink: 0; }
+.player-row .avatar-fallback { font-size: 12px; }
+
+.player-name { font-weight: 600; font-size: 14px; }
+
+.ready-badge {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  color: var(--text-faint);
+  background: rgba(255, 255, 255, 0.03);
+}
+.ready-badge.is-ready {
+  color: var(--success);
+  background: rgba(52, 211, 153, 0.12);
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.15);
+}
+
+/* ============ CENTER ============ */
+.lobby-center { display: flex; flex-direction: column; gap: 20px; }
+
+.center-card {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.center-eyebrow {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-2);
+  font-weight: 600;
+  text-align: center;
+}
+
+.ready-count {
+  font-size: 44px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1;
+}
+
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ============ VETO ============ */
+.turn-indicator {
+  text-align: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.turn-indicator.my-turn {
+  color: #fff;
+  border-color: var(--accent-2);
+  background: rgba(236, 72, 153, 0.12);
+  box-shadow: 0 0 16px rgba(236, 72, 153, 0.3);
+}
+
+.map-strip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.map-tile {
+  background: #0e111f;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 10px;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.03em;
+  transition: all 0.15s ease;
+}
+.map-tile:last-child:nth-child(odd) { grid-column: span 2; }
+.map-tile.can-ban:hover {
+  border-color: var(--accent-2);
+  background: rgba(236, 72, 153, 0.12);
+  transform: translateY(-1px);
+}
+.map-tile:disabled { cursor: not-allowed; }
+.map-tile:disabled:not(.banned) { opacity: 0.7; }
+.map-tile.banned {
+  text-decoration: line-through;
+  opacity: 0.3;
+}
+
+/* ============ RESULT ============ */
+.final-map {
+  text-align: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #a5b4fc, var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1.1;
+}
+
+.score-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.score-field label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.score-field input {
+  width: 100%;
+  background: #0e111f;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 14px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+.score-field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.result-note {
+  display: none;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--success);
+}
+
+.lobby-back-link {
+  display: inline-block;
+  margin-top: 24px;
+}
+
+@media (max-width: 1000px) {
+  .lobby-grid { grid-template-columns: 1fr; }
+  .lobby-center { order: -1; }
+  .lobby-page { padding: 20px 16px 40px; }
+}
+
+/* ===== PROFILE ===== */
+/* Стили страницы профиля. Подключается отдельным файлом — style.css трогать не нужно.
+   Все классы с префиксом pf-, чтобы не пересекаться с остальными страницами. */
+
+.pf-content {
+  padding: 28px 32px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+/* ============ HERO ============ */
+.pf-hero {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 40px;
+  padding: 32px 36px;
+  position: relative;
+  overflow: hidden;
+}
+.pf-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(99, 102, 241, 0.1), transparent 55%);
+  pointer-events: none;
+}
+.pf-hero > * { position: relative; }
+
+.pf-avatar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 168px;
+}
+
+.avatar-frame-neon.pf-avatar {
+  width: 132px;
+  height: 132px;
+  padding: 3px;
+}
+.pf-avatar [hidden] { display: none !important; }
+.pf-avatar .avatar-fallback { font-size: 40px; }
+
+.pf-avatar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.pf-avatar-actions .btn-ghost { width: 100%; }
+.pf-avatar-actions [hidden] { display: none; }
+.pf-danger:hover { border-color: rgba(244, 63, 94, 0.6); color: #fca5a5; }
+
+.pf-badges { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.pf-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+}
+.pf-badge-admin { color: #f9a8d4; border-color: rgba(236, 72, 153, 0.4); background: rgba(236, 72, 153, 0.1); }
+.pf-badge-ok { color: var(--success); border-color: rgba(52, 211, 153, 0.35); background: rgba(52, 211, 153, 0.08); }
+.pf-badge-warn { color: #fcd34d; border-color: rgba(252, 211, 77, 0.35); background: rgba(252, 211, 77, 0.08); }
+
+.pf-name { font-size: 40px; line-height: 1.05; word-break: break-word; }
+.pf-fullname { color: var(--text-dim); font-size: 15px; margin-top: 6px; }
+.pf-email { color: var(--text-faint); font-size: 13px; margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+
+.pf-elo-col { text-align: right; }
+.pf-elo-num {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, #a5b4fc, var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.pf-elo-label {
+  font-size: 11px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 8px;
+}
+.pf-level {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.15);
+  color: #c4b5fd;
+}
+
+/* ============ STATS ============ */
+.pf-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.pf-stat {
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pf-stat-val { font-size: 28px; font-weight: 700; line-height: 1.1; }
+.pf-stat-lbl {
+  font-size: 11px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.pf-win { color: var(--success); }
+.pf-loss { color: var(--danger); }
+
+/* ============ COLUMNS ============ */
+.pf-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.pf-side { display: flex; flex-direction: column; gap: 24px; }
+
+.pf-card { overflow: hidden; }
+.pf-card-head { padding: 20px 24px 6px; }
+.pf-card-head h2 { font-size: 19px; }
+
+/* ============ MATCH HISTORY ============ */
+.pf-match-head,
+.pf-match-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 90px 90px;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+}
+.pf-match-head {
+  padding-top: 14px;
+  padding-bottom: 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  font-weight: 600;
+}
+.pf-match-row {
+  margin: 0 12px;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.pf-match-row:hover { background: rgba(255, 255, 255, 0.02); }
+.pf-match-row .mono { font-weight: 700; }
+.pf-match-head { padding-left: 24px; padding-right: 24px; }
+.pf-right { text-align: right; }
+
+.pf-result {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  padding: 3px 0;
+  border-radius: 6px;
+  text-align: center;
+}
+.pf-result-win { color: var(--success); background: rgba(52, 211, 153, 0.1); }
+.pf-result-loss { color: var(--danger); background: rgba(244, 63, 94, 0.1); }
+
+.pf-map { display: flex; flex-direction: column; }
+.pf-map small { color: var(--text-faint); font-weight: 500; font-size: 11px; }
+
+.pf-card > .pf-match-row:last-child { margin-bottom: 12px; }
+
+.pf-empty {
+  padding: 36px 24px 40px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+.pf-empty p { margin-bottom: 16px; }
+.pf-empty-btn { display: inline-flex; }
+
+.pf-form { padding: 14px 24px 24px; display: flex; flex-direction: column; gap: 14px; }
+.pf-field label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.pf-field input {
+  width: 100%;
+  background: #0e111f;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 14px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+}
+.pf-field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+.pf-hint { display: block; margin-top: 6px; font-size: 11px; color: var(--text-faint); line-height: 1.4; }
+
+.pf-submit { width: 100%; justify-content: center; }
+.pf-submit:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.pf-alert {
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  line-height: 1.4;
+}
+.pf-alert[hidden] { display: none; }
+.pf-alert.err { background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.3); color: #fca5a5; }
+.pf-alert.ok { background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.3); color: #6ee7b7; }
+
+.pf-avatar-col .pf-alert { width: 100%; text-align: center; font-size: 12px; }
+
+@media (max-width: 1100px) {
+  .pf-columns { grid-template-columns: 1fr; }
+}
+@media (max-width: 860px) {
+  .pf-content { padding: 20px 16px 40px; }
+  .pf-hero { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 24px; padding: 28px 20px; }
+  .pf-badges { justify-content: center; }
+  .pf-elo-col { text-align: center; }
+  .pf-stats { grid-template-columns: repeat(2, 1fr); }
+  .pf-name { font-size: 32px; }
+}

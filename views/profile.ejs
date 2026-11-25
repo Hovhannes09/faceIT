@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="<%= currentLang %>">
+<head>
+  <%- include('partials/head', { title: t('profile_title') }) %>
+  <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+
+  <%- include('partials/sidebar', { activePage: 'profile', currentUser }) %>
+
+  <div class="main">
+    <%- include('partials/topbar', { currentUser }) %>
+
+    <div class="pf-content">
+
+      <!-- HERO: аватарка + ник + ELO -->
+      <section class="faceit-card pf-hero">
+        <div class="pf-avatar-col">
+          <div class="avatar-frame-neon pf-avatar">
+            <img id="avatarImg" src="<%= currentUser.avatarUrl || '' %>" alt="" <%= currentUser.avatarUrl ? '' : 'hidden' %>>
+            <div class="avatar-fallback" id="avatarFallback" <%= currentUser.avatarUrl ? 'hidden' : '' %>><%= currentUser.username.slice(0, 2).toUpperCase() %></div>
+          </div>
+
+          <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/webp" hidden>
+          <div class="pf-avatar-actions">
+            <button type="button" class="btn-ghost" id="avatarUploadBtn"><%= t('btn_upload_avatar') %></button>
+            <button type="button" class="btn-ghost pf-danger" id="avatarDeleteBtn" <%= currentUser.avatarUrl ? '' : 'hidden' %>><%= t('btn_delete_avatar') %></button>
+          </div>
+          <div class="pf-alert" id="avatarAlert" hidden></div>
+        </div>
+
+        <div class="pf-identity">
+          <div class="pf-badges">
+            <span class="pf-badge <%= currentUser.role === 'admin' ? 'pf-badge-admin' : '' %>"><%= currentUser.role === 'admin' ? t('role_admin') : t('role_user') %></span>
+            <span class="pf-badge <%= currentUser.isVerified ? 'pf-badge-ok' : 'pf-badge-warn' %>"><%= currentUser.isVerified ? t('verified') : t('not_verified') %></span>
+          </div>
+          <h1 class="pf-name"><%= currentUser.username %></h1>
+          <% if (currentUser.fullName) { %>
+            <div class="pf-fullname"><%= currentUser.fullName %></div>
+          <% } %>
+          <div class="pf-email"><%= currentUser.email %></div>
+        </div>
+
+        <div class="pf-elo-col">
+          <div class="pf-elo-num mono"><%= currentUser.elo %></div>
+          <div class="pf-elo-label"><%= t('current_elo') %></div>
+          <div class="pf-level mono">LVL <%= level %></div>
+        </div>
+      </section>
+
+      <!-- СТАТИСТИКА -->
+      <section class="pf-stats">
+        <div class="faceit-card pf-stat">
+          <span class="pf-stat-val mono"><%= stats.matches %></span>
+          <span class="pf-stat-lbl"><%= t('stat_matches') %></span>
+        </div>
+        <div class="faceit-card pf-stat">
+          <span class="pf-stat-val mono pf-win"><%= stats.wins %></span>
+          <span class="pf-stat-lbl"><%= t('stat_wins') %></span>
+        </div>
+        <div class="faceit-card pf-stat">
+          <span class="pf-stat-val mono pf-loss"><%= stats.losses %></span>
+          <span class="pf-stat-lbl"><%= t('stat_losses') %></span>
+        </div>
+        <div class="faceit-card pf-stat">
+          <span class="pf-stat-val mono"><%= stats.winrate %>%</span>
+          <span class="pf-stat-lbl"><%= t('stat_winrate') %></span>
+        </div>
+      </section>
+
+      <div class="pf-columns">
+
+        <!-- ПОСЛЕДНИЕ МАТЧИ -->
+        <section class="faceit-card pf-card">
+          <div class="pf-card-head">
+            <h2><%= t('recent_matches') %></h2>
+          </div>
+
+          <% if (history.length === 0) { %>
+            <div class="pf-empty">
+              <p><%= t('no_matches_yet') %></p>
+              <a href="/dashboard" class="btn-primary pf-empty-btn"><%= t('btn_find_game') %></a>
+            </div>
+          <% } else { %>
+            <div class="pf-match-head">
+              <span><%= t('col_result') %></span>
+              <span><%= t('col_map') %></span>
+              <span><%= t('col_score') %></span>
+              <span class="pf-right"><%= t('col_elo_change') %></span>
+            </div>
+            <% history.forEach((m) => { %>
+              <div class="pf-match-row">
+                <span class="pf-result <%= m.won ? 'pf-result-win' : 'pf-result-loss' %>"><%= m.won ? t('result_win') : t('result_loss') %></span>
+                <span class="pf-map">
+                  <%= m.map || '—' %>
+                  <small><%= new Date(m.date).toLocaleDateString(currentLang === 'ru' ? 'ru-RU' : 'en-GB') %></small>
+                </span>
+                <span class="mono"><%= m.myScore %> : <%= m.oppScore %></span>
+                <span class="mono pf-right <%= m.delta > 0 ? 'pf-win' : (m.delta < 0 ? 'pf-loss' : '') %>">
+                  <%= m.delta === null ? '—' : (m.delta > 0 ? '+' + m.delta : m.delta) %>
+                </span>
+              </div>
+            <% }) %>
+          <% } %>
+        </section>
+
+        <!-- НАСТРОЙКИ -->
+        <div class="pf-side">
+
+          <section class="faceit-card pf-card">
+            <div class="pf-card-head"><h2><%= t('profile_settings') %></h2></div>
+            <form id="profileForm" class="pf-form" novalidate>
+              <div class="pf-field">
+                <label for="pfUsername"><%= t('label_username') %></label>
+                <input type="text" id="pfUsername" value="<%= currentUser.username %>" minlength="3" maxlength="30" required autocomplete="username">
+              </div>
+              <div class="pf-field">
+                <label for="pfEmail"><%= t('label_email') %></label>
+                <input type="email" id="pfEmail" value="<%= currentUser.email %>" required autocomplete="email">
+                <small class="pf-hint"><%= t('email_change_hint') %></small>
+              </div>
+              <div class="pf-alert" id="profileAlert" hidden></div>
+              <button type="submit" class="btn-primary pf-submit" id="profileSubmit"><%= t('btn_save') %></button>
+            </form>
+          </section>
+
+          <section class="faceit-card pf-card">
+            <div class="pf-card-head"><h2><%= t('password_title') %></h2></div>
+            <form id="passwordForm" class="pf-form" novalidate>
+              <div class="pf-field">
+                <label for="pfOldPassword"><%= t('label_old_password') %></label>
+                <input type="password" id="pfOldPassword" required autocomplete="current-password">
+              </div>
+              <div class="pf-field">
+                <label for="pfNewPassword"><%= t('label_new_password') %></label>
+                <input type="password" id="pfNewPassword" minlength="6" required autocomplete="new-password">
+              </div>
+              <div class="pf-field">
+                <label for="pfConfirmPassword"><%= t('label_confirm_password') %></label>
+                <input type="password" id="pfConfirmPassword" minlength="6" required autocomplete="new-password">
+              </div>
+              <div class="pf-alert" id="passwordAlert" hidden></div>
+              <button type="submit" class="btn-primary pf-submit" id="passwordSubmit"><%= t('btn_change_password') %></button>
+            </form>
+          </section>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    window.APP_TOKEN = <%- JSON.stringify(token) %>
+    window.I18N = {
+      profileSaved: <%- JSON.stringify(t('profile_saved')) %>,
+      avatarUpdated: <%- JSON.stringify(t('avatar_updated')) %>,
+      avatarDeleted: <%- JSON.stringify(t('avatar_deleted')) %>,
+      avatarBadType: <%- JSON.stringify(t('avatar_bad_type')) %>,
+      avatarTooBig: <%- JSON.stringify(t('avatar_too_big')) %>,
+      passwordChanged: <%- JSON.stringify(t('password_changed')) %>,
+      passwordMismatch: <%- JSON.stringify(t('password_mismatch')) %>,
+      passwordShort: <%- JSON.stringify(t('password_short')) %>,
+      fillAll: <%- JSON.stringify(t('fill_all_fields')) %>,
+      serverError: <%- JSON.stringify(t('server_error')) %>
+    }
+  </script>
+  <script src="/js/profile.js"></script>
+</body>
+</html>
