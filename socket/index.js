@@ -76,6 +76,19 @@ export function initSocket(server) {
 	})
 
 	return io
+
 }
+
+let io = null
+ 
+export function emitToUser(userId, event, payload) {
+	if (!io) return
+	const socketIds = onlineUsers.get(Number(userId))
+	if (!socketIds) return 
+	for (const socketId of socketIds) {
+		io.to(socketId).emit(event, payload)
+	}
+}
+ 
 
 export { onlineUsers }

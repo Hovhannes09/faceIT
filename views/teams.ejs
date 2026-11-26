@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="<%= currentLang %>">
+<head>
+  <%- include('partials/head', { title: t('teams_title') }) %>
+</head>
+<body>
+
+  <%- include('partials/sidebar', { activePage: 'teams', currentUser }) %>
+
+  <div class="main">
+    <%- include('partials/topbar', { currentUser }) %>
+
+    <div class="tm-content">
+
+      <!-- живое уведомление о новом приглашении (приходит по сокету) -->
+      <div class="tm-live" id="liveBanner" hidden>
+        <span id="liveText"></span>
+        <button type="button" class="btn-ghost" id="liveShow"><%= t('btn_show') %></button>
+      </div>
+
+      <div class="tm-columns">
+
+        <!-- ВСЕ КОМАНДЫ -->
+        <section class="faceit-card tm-card">
+          <div class="tm-card-head">
+            <h2><%= t('all_teams') %></h2>
+            <span class="tm-sub"><%= teams.length %></span>
+          </div>
+
+          <% if (teams.length === 0) { %>
+            <div class="tm-empty"><%= t('no_teams_yet') %></div>
+          <% } else { %>
+            <div class="tm-list-head">
+              <span><%= t('col_team') %></span>
+              <span class="tm-center"><%= t('col_members') %></span>
+              <span class="tm-right"><%= t('col_avg_elo') %></span>
+            </div>
+            <% teams.forEach((team) => { %>
+              <a class="tm-row <%= team.isMine ? 'tm-row-mine' : '' %>" href="/teams/<%= team.id %>">
+                <span class="tm-team-cell">
+                  <span class="tm-logo"><%= team.name.slice(0, 2).toUpperCase() %></span>
+                  <span class="tm-team-text">
+                    <strong><%= team.name %></strong>
+                    <small><%= t('captain_label') %>: <%= team.captain %></small>
+                  </span>
+                  <% if (team.isMine) { %><span class="tm-badge tm-badge-mine"><%= t('your_team_badge') %></span><% } %>
+                </span>
+                <span class="tm-center mono <%= team.count >= TEAM_MAX ? 'tm-full' : '' %>"><%= team.count %>/<%= TEAM_MAX %></span>
+                <span class="tm-right mono"><%= team.avgElo %></span>
+              </a>
+            <% }) %>
+          <% } %>
+        </section>
+
+        <div class="tm-side">
+
+          <!-- МОЯ КОМАНДА / СОЗДАНИЕ -->
+          <% if (myTeam) { %>
+            <section class="faceit-card tm-card tm-mine">
+              <div class="tm-card-head"><h2><%= t('my_team') %></h2></div>
+              <div class="tm-mine-body">
+                <span class="tm-logo tm-logo-lg"><%= myTeam.name.slice(0, 2).toUpperCase() %></span>
+                <strong class="tm-mine-name"><%= myTeam.name %></strong>
+                <a href="/teams/<%= myTeam.id %>" class="btn-primary tm-btn-full"><%= t('btn_open') %></a>
+              </div>
+            </section>
+          <% } else { %>
+            <section class="faceit-card tm-card">
+              <div class="tm-card-head"><h2><%= t('create_team_title') %></h2></div>
+              <form id="createTeamForm" class="tm-form" novalidate>
+                <div class="tm-field">
+                  <label for="teamName"><%= t('label_team_name') %></label>
+                  <input type="text" id="teamName" minlength="3" maxlength="24" required autocomplete="off">
+                  <small class="tm-hint"><%= t('team_name_hint') %></small>
+                </div>
+                <div class="tm-alert" id="createAlert" hidden></div>
+                <button type="submit" class="btn-primary tm-btn-full" id="createSubmit"><%= t('btn_create_team') %></button>
+              </form>
+            </section>
+          <% } %>
+
+          <!-- ПРИГЛАШЕНИЯ -->
+          <section class="faceit-card tm-card">
+            <div class="tm-card-head">
+              <h2><%= t('invites_title') %></h2>
+              <% if (invites.length) { %><span class="tm-pill"><%= invites.length %></span><% } %>
+            </div>
+            <div class="tm-alert tm-alert-inline" id="invitesAlert" hidden></div>
+
+            <% if (invites.length === 0) { %>
+              <div class="tm-empty tm-empty-sm"><%= t('no_invites') %></div>
+            <% } else { %>
+              <% invites.forEach((invite) => { %>
+                <div class="tm-invite">
+                  <div class="tm-invite-text">
+                    <strong><%= invite.Team ? invite.Team.name : '—' %></strong>
+                    <small><%= t('invite_from') %> <%= invite.inviter ? invite.inviter.username : '—' %></small>
+                  </div>
+                  <div class="tm-invite-actions">
+                    <button type="button" class="btn-primary tm-btn-sm" data-action="accept-invite" data-id="<%= invite.id %>"><%= t('btn_accept') %></button>
+                    <button type="button" class="btn-ghost tm-btn-sm" data-action="decline-invite" data-id="<%= invite.id %>"><%= t('btn_decline') %></button>
+                  </div>
+                </div>
+              <% }) %>
+            <% } %>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.APP_TOKEN = <%- JSON.stringify(token) %>
+    window.I18N = <%- JSON.stringify({
+      teamCreated: t('team_created'),
+      fillAll: t('fill_all_fields'),
+      serverError: t('server_error'),
+      newInvite: t('new_invite_live'),
+      confirmKick: t('confirm_kick'),
+      confirmCaptain: t('confirm_captain'),
+      confirmLeave: t('confirm_leave'),
+      confirmDelete: t('confirm_delete'),
+      inviteSent: t('invite_sent')
+    }) %>
+  </script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="/js/teams.js"></script>
+</body>
+</html>

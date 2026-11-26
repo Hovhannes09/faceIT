@@ -5,6 +5,7 @@ import Team from './Team.js'
 import TeamMember from './TeamMember.js'
 import Tournament from './Tournament.js'
 import TournamentTeam from './TournamentTeam.js'
+import TeamInvite from './TeamInvite.js'
 import Users from './Users.js'
 
 // ---- User <-> Team -- TeamMember ----
@@ -28,12 +29,19 @@ MatchPlayer.belongsTo(Match, { foreignKey: 'matchId' })
 Team.belongsToMany(Tournament, { through: TournamentTeam, foreignKey: 'teamId' })
 Tournament.belongsToMany(Team, { through: TournamentTeam, foreignKey: 'tournamentId' })
 
+// ---- TeamInvite relationships ----
+
 TournamentTeam.belongsTo(Team, { foreignKey: 'teamId' })
 TournamentTeam.belongsTo(Tournament, { foreignKey: 'tournamentId' })
+
+TeamInvite.belongsTo(Team, { foreignKey: 'teamId' })
+TeamInvite.belongsTo(Users, { as: 'invitee', foreignKey: 'inviteeId' })
+TeamInvite.belongsTo(Users, { as: 'inviter', foreignKey: 'inviterId' })
 
 export {
 	Match,
 	MatchPlayer, sequelize, Team,
 	TeamMember, Tournament,
-	TournamentTeam, Users
+	TournamentTeam, Users,
+	TeamInvite
 }

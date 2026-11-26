@@ -1,6 +1,7 @@
 import { Router } from "express"
 import pageAuth from "../middlewares/pageAuth.js"
 import { renderLogin, renderRegister, renderDashboard, renderLobby, renderProfile } from "../controllers/viewController.js"
+import { renderTeams, renderTeam } from "../controllers/teamViewController.js"
 
 const router = Router()
 
@@ -24,4 +25,6 @@ router.get("/login", renderLogin)
 router.get("/register", renderRegister)
 router.get("/lobby/:matchId", pageAuth, renderLobby)
 router.get("/profile", pageAuth, renderProfile)
+router.get("/teams", pageAuth, renderTeams)
+router.get("/teams/:teamId", pageAuth, renderTeam)
 export default router

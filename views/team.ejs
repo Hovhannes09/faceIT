@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="<%= currentLang %>">
+<head>
+  <%- include('partials/head', { title: team.name }) %>
+</head>
+<body>
+
+  <%- include('partials/sidebar', { activePage: 'teams', currentUser }) %>
+
+  <div class="main">
+    <%- include('partials/topbar', { currentUser }) %>
+
+    <div class="tm-content">
+
+      <a href="/teams" class="tm-back">← <%= t('back_to_teams') %></a>
+
+      <!-- HERO -->
+      <section class="faceit-card tm-hero">
+        <span class="tm-logo tm-logo-xl"><%= team.name.slice(0, 2).toUpperCase() %></span>
+        <div class="tm-hero-text">
+          <h1 class="tm-hero-name"><%= team.name %></h1>
+          <div class="tm-hero-meta">
+            <%= t('captain_label') %>: <strong><%= team.captain ? team.captain.username : '—' %></strong>
+            · <%= t('created_at') %> <%= new Date(team.createdAt).toLocaleDateString(currentLang === 'ru' ? 'ru-RU' : 'en-GB') %>
+          </div>
+        </div>
+        <div class="tm-hero-stats">
+          <div>
+            <span class="tm-hero-num mono"><%= members.length %>/<%= TEAM_MAX %></span>
+            <span class="tm-hero-lbl"><%= t('col_members') %></span>
+          </div>
+          <div>
+            <span class="tm-hero-num mono"><%= avgElo %></span>
+            <span class="tm-hero-lbl"><%= t('col_avg_elo') %></span>
+          </div>
+        </div>
+      </section>
+
+      <div class="tm-alert" id="teamAlert" hidden></div>
+
+      <div class="tm-columns">
+
+        <!-- СОСТАВ -->
+        <section class="faceit-card tm-card">
+          <div class="tm-card-head"><h2><%= t('team_roster') %></h2></div>
+
+          <% members.forEach((m) => { %>
+            <div class="tm-member">
+              <span class="avatar-frame-neon tm-avatar">
+                <% if (m.avatarUrl) { %>
+                  <img src="<%= m.avatarUrl %>" alt="">
+                <% } else { %>
+                  <span class="avatar-fallback"><%= m.username.slice(0, 2).toUpperCase() %></span>
+                <% } %>
+              </span>
+              <span class="tm-member-name">
+                <%= m.username %><% if (m.userId === currentUser.id) { %> <small><%= t('you_suffix') %></small><% } %>
+              </span>
+              <span class="tm-badge <%= m.role === 'captain' ? 'tm-badge-captain' : '' %>"><%= m.role === 'captain' ? t('role_captain') : t('role_member') %></span>
+              <span class="tm-member-elo mono"><%= m.elo %></span>
+
+              <% if (isCaptain && m.userId !== currentUser.id) { %>
+                <span class="tm-member-actions">
+                  <button type="button" class="btn-ghost tm-btn-sm" data-action="make-captain" data-team-id="<%= team.id %>" data-user-id="<%= m.userId %>"><%= t('btn_make_captain') %></button>
+                  <button type="button" class="btn-ghost tm-btn-sm tm-danger" data-action="kick" data-team-id="<%= team.id %>" data-user-id="<%= m.userId %>"><%= t('btn_kick') %></button>
+                </span>
+              <% } %>
+            </div>
+          <% }) %>
+        </section>
+
+        <div class="tm-side">
+
+          <% if (isCaptain) { %>
+            <!-- ПРИГЛАСИТЬ -->
+            <section class="faceit-card tm-card">
+              <div class="tm-card-head"><h2><%= t('invite_player_title') %></h2></div>
+              <% if (members.length >= TEAM_MAX) { %>
+                <div class="tm-empty tm-empty-sm"><%= t('team_full') %></div>
+              <% } else { %>
+                <form id="inviteForm" class="tm-form" data-team-id="<%= team.id %>" novalidate>
+                  <div class="tm-field">
+                    <label for="inviteUsername"><%= t('label_invite_username') %></label>
+                    <input type="text" id="inviteUsername" minlength="3" maxlength="30" required autocomplete="off">
+                  </div>
+                  <div class="tm-alert" id="inviteAlert" hidden></div>
+                  <button type="submit" class="btn-primary tm-btn-full" id="inviteSubmit"><%= t('btn_send_invite') %></button>
+                </form>
+              <% } %>
+
+              <div class="tm-pending">
+                <div class="tm-pending-title"><%= t('pending_invites') %></div>
+                <% if (pendingInvites.length === 0) { %>
+                  <div class="tm-empty tm-empty-sm"><%= t('no_pending') %></div>
+                <% } else { %>
+                  <% pendingInvites.forEach((inv) => { %>
+                    <div class="tm-pending-row">
+                      <span><%= inv.invitee ? inv.invitee.username : '—' %></span>
+                      <small><%= new Date(inv.createdAt).toLocaleDateString(currentLang === 'ru' ? 'ru-RU' : 'en-GB') %></small>
+                    </div>
+                  <% }) %>
+                <% } %>
+              </div>
+            </section>
+          <% } %>
+
+          <% if (!isMember && inOtherTeam) { %>
+            <section class="faceit-card tm-card">
+              <div class="tm-empty tm-empty-sm"><%= t('in_other_team') %></div>
+            </section>
+          <% } %>
+
+          <% if (isMember) { %>
+            <section class="faceit-card tm-card tm-danger-zone">
+              <div class="tm-card-head"><h2><%= t('danger_zone') %></h2></div>
+              <div class="tm-form">
+                <% if (isCaptain) { %>
+                  <small class="tm-hint"><%= t('captain_cannot_leave') %></small>
+                  <button type="button" class="btn-ghost tm-btn-full tm-danger" data-action="delete-team" data-team-id="<%= team.id %>"><%= t('btn_delete_team') %></button>
+                <% } else { %>
+                  <button type="button" class="btn-ghost tm-btn-full tm-danger" data-action="leave" data-team-id="<%= team.id %>"><%= t('btn_leave_team') %></button>
+                <% } %>
+              </div>
+            </section>
+          <% } %>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.APP_TOKEN = <%- JSON.stringify(token) %>
+    window.I18N = <%- JSON.stringify({
+      teamCreated: t('team_created'),
+      fillAll: t('fill_all_fields'),
+      serverError: t('server_error'),
+      newInvite: t('new_invite_live'),
+      confirmKick: t('confirm_kick'),
+      confirmCaptain: t('confirm_captain'),
+      confirmLeave: t('confirm_leave'),
+      confirmDelete: t('confirm_delete'),
+      inviteSent: t('invite_sent')
+    }) %>
+  </script>
+  <script src="/js/teams.js"></script>
+</body>
+</html>

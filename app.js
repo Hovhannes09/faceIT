@@ -10,6 +10,7 @@ import { initSocket } from "./socket/index.js"
 import matchRoutes from "./routes/matchRoutes.js"
 import viewRoutes from "./routes/viewRoutes.js"
 import localeMiddleware from "./middlewares/localMiddleware.js"
+import teamRoutes from "./routes/teamRoutes.js"
 
 
 import "./migrate.js"
@@ -31,6 +32,7 @@ app.use("/api/profile", profileRoutes)
 app.use("/api/auth", authRoutes)
 app.use("/api/matches", matchRoutes)
 app.use("/", viewRoutes)
+app.use("/api/teams", teamRoutes)
 
 const server = createServer(app)
 

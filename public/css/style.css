@@ -996,3 +996,73 @@
   .pf-stats { grid-template-columns: repeat(2, 1fr); }
   .pf-name { font-size: 32px; }
 }
+
+.tm-content{padding:24px 28px;display:flex;flex-direction:column;gap:20px}
+.tm-columns{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr);gap:20px;align-items:start}
+.tm-side{display:flex;flex-direction:column;gap:20px}
+.tm-card{padding:20px}
+.tm-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.tm-card-head h2{font-family:'Rajdhani',sans-serif;font-size:20px;letter-spacing:.05em;text-transform:uppercase;margin:0}
+.tm-sub{color:var(--text-faint);font-family:'JetBrains Mono',monospace;font-size:13px}
+.tm-pill{background:var(--accent-2);color:#fff;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700}
+.tm-empty{color:var(--text-dim);text-align:center;padding:28px 10px}
+.tm-empty-sm{padding:10px 0;font-size:14px}
+.tm-list-head,.tm-row{display:grid;grid-template-columns:minmax(0,1fr) 80px 100px;gap:12px;align-items:center;padding:10px 12px}
+.tm-list-head{color:var(--text-faint);font-size:12px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border)}
+.tm-row{text-decoration:none;color:var(--text);border-bottom:1px solid var(--border);border-radius:8px;transition:background .15s}
+.tm-row:hover{background:rgba(99,102,241,.08)}
+.tm-row-mine{background:rgba(99,102,241,.12)}
+.tm-center{text-align:center}.tm-right{text-align:right}
+.tm-full{color:var(--accent-2)}
+.tm-team-cell{display:flex;align-items:center;gap:12px;min-width:0}
+.tm-team-text{display:flex;flex-direction:column;min-width:0}
+.tm-team-text strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-team-text small{color:var(--text-dim)}
+.tm-logo{width:38px;height:38px;flex:none;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff}
+.tm-logo-lg{width:64px;height:64px;font-size:24px}
+.tm-logo-xl{width:88px;height:88px;font-size:32px;border-radius:16px}
+.tm-badge{font-size:11px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:6px;background:rgba(148,163,184,.15);color:var(--text-dim);white-space:nowrap}
+.tm-badge-mine,.tm-badge-captain{background:rgba(139,92,246,.2);color:var(--vip)}
+.tm-mine-body{display:flex;flex-direction:column;align-items:center;gap:12px}
+.tm-mine-name{font-family:'Rajdhani',sans-serif;font-size:22px}
+.tm-form{display:flex;flex-direction:column;gap:12px}
+.tm-field{display:flex;flex-direction:column;gap:6px}
+.tm-field label{font-size:13px;color:var(--text-dim)}
+.tm-field input{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font:inherit}
+.tm-field input:focus{outline:none;border-color:var(--accent)}
+.tm-hint{color:var(--text-faint);font-size:12px}
+.tm-btn-full{width:100%;text-align:center;display:block;box-sizing:border-box}
+.tm-btn-sm{padding:6px 12px;font-size:13px}
+.tm-danger{color:#f87171;border-color:rgba(248,113,113,.35)}
+.tm-alert{padding:10px 12px;border-radius:8px;font-size:14px}
+.tm-alert[hidden]{display:none}
+.tm-alert.err{background:rgba(248,113,113,.12);color:#fca5a5;border:1px solid rgba(248,113,113,.3)}
+.tm-alert.ok{background:rgba(52,211,153,.12);color:#6ee7b7;border:1px solid rgba(52,211,153,.3)}
+.tm-alert-inline{margin-bottom:10px}
+.tm-live{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-radius:10px;background:rgba(236,72,153,.12);border:1px solid rgba(236,72,153,.4)}
+.tm-live[hidden]{display:none}
+.tm-invite{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tm-invite-text{display:flex;flex-direction:column}
+.tm-invite-text small{color:var(--text-dim)}
+.tm-invite-actions,.tm-member-actions{display:flex;gap:8px}
+.tm-back{color:var(--text-dim);text-decoration:none;font-size:14px}
+.tm-back:hover{color:var(--text)}
+.tm-hero{display:flex;align-items:center;gap:20px;padding:24px;flex-wrap:wrap}
+.tm-hero-text{flex:1;min-width:200px}
+.tm-hero-name{font-family:'Rajdhani',sans-serif;font-size:34px;margin:0 0 4px}
+.tm-hero-meta{color:var(--text-dim);font-size:14px}
+.tm-hero-stats{display:flex;gap:28px}
+.tm-hero-stats>div{display:flex;flex-direction:column;align-items:center}
+.tm-hero-num{font-size:26px;font-weight:700}
+.tm-hero-lbl{color:var(--text-faint);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+.tm-member{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tm-avatar{width:42px;height:42px;flex:none;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.tm-avatar img{width:100%;height:100%;object-fit:cover}
+.tm-member-name{flex:1;min-width:100px;font-weight:600}
+.tm-member-name small{color:var(--text-faint);font-weight:400}
+.tm-member-elo{color:var(--text-dim)}
+.tm-pending{margin-top:18px;border-top:1px solid var(--border);padding-top:12px}
+.tm-pending-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);margin-bottom:6px}
+.tm-pending-row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}
+.tm-pending-row small{color:var(--text-faint)}
+@media(max-width:900px){.tm-columns{grid-template-columns:1fr}.tm-content{padding:16px}}
